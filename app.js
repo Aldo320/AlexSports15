@@ -32,7 +32,7 @@ function renderizarProductos() {
         Boton.classList.add("btn","btn-primary"); 
         Boton.textContent="Agregar Al Carrito"; 
         Boton.setAttribute("marcador",info.id); 
-        Boton.addEventListener("click",aniadirProductoAlCarrito); 
+        Boton.addEventListener("click",aniadirProdAlCarrito); 
         CardBody.appendChild(Imagen); 
         CardBody.appendChild(Titulo); 
         CardBody.appendChild(Precio); 
@@ -43,7 +43,7 @@ function renderizarProductos() {
       }); 
     }
 
-function aniadirProductoAlCarrito(evento) {
+function aniadirProdAlCarrito(evento) {
   carrito.push(evento.target.getAttribute('marcador'))
   renderizarCarrito();
 
@@ -91,11 +91,15 @@ function comprarItemCarrito(evento) {
 
 function calcularTotal() {
   return carrito.reduce((total, item) => {
-      const miItem = Championes.filter((itemChampiones) => {
+      fetch("../data.json")
+      .then((response) => response.json())
+      .then((data) => {
+      const miItem = data.filter((itemChampiones) => {
           return itemChampiones.id === parseInt(item);
       });
       return total + miItem[0].precio;
   }, 0).toFixed(2);
+})
 }
 
 
@@ -110,7 +114,7 @@ renderizarProductos();
 renderizarCarrito();
 
 const actualizarCarrito = (carrito) => {
-localStorage.setItem ("carrito", JSON.stringify(carrito));
+localStorage.getItem ("carrito", JSON.stringify(carrito));
 };
 
 if (localStorage.getItem ("carrito")) {
